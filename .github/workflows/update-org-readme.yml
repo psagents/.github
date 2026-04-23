@@ -1,0 +1,59 @@
+name: Update Org README
+
+on:
+  schedule:
+    - cron: '7 * * * *'  # hourly at :07
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: write
+
+jobs:
+  update-readme:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.ORG_README_PAT }}
+
+      - name: Generate README
+        env:
+          GH_TOKEN: ${{ secrets.ORG_README_PAT }}
+        run: |
+          set -euo pipefail
+
+          ORG="psagents"
+
+          # Fetch all org repos, exclude .github itself, sort by pushed_at desc
+          REPOS=$(gh api "orgs/${ORG}/repos?per_page=100&sort=pushed&direction=desc" \
+            --paginate \
+            --jq '[.[] | select(.name != ".github") | {
+              name: .name,
+              url: .html_url,
+              description: (.description // ""),
+              pushed_at: .pushed_at
+            }] | sort_by(.pushed_at) | reverse')
+
+          # Build markdown table
+          {
+            echo "# ${ORG}"
+            echo ""
+            echo "| Repository | Description | Last updated |"
+            echo "|------------|-------------|:------------:|"
+            echo "$REPOS" | jq -r '.[] | "| [\(.name)](\(.url)) | \(.description) | \(.pushed_at | split("T")[0]) |"'
+            echo ""
+            echo "_Updated automatically every hour by [update-org-readme.yml](.github/workflows/update-org-readme.yml)._"
+          } > README.md
+
+      - name: Commit and push if changed
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git diff --quiet README.md && echo "No changes, skipping commit." && exit 0
+          git add README.md
+          git commit -m "chore: update org README [skip ci]"
+          git push
