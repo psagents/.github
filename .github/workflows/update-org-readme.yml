@@ -61,7 +61,7 @@ jobs:
               echo "| [${name}](${url}) | ${description} | ${date} |"
             done < <(echo "$REPOS" | jq -c '.[]')
             echo ""
-            echo "_Updated automatically every hour by [update-org-readme.yml](.github/workflows/update-org-readme.yml)._"
+            echo "_Updated automatically every hour by [update-org-readme.yml](https://github.com/psagents/.github/blob/main/.github/workflows/update-org-readme.yml)._"
           } > README.md
           mkdir -p profile
           cp README.md profile/README.md
