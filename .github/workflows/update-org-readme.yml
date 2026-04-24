@@ -48,12 +48,14 @@ jobs:
             echo ""
             echo "_Updated automatically every hour by [update-org-readme.yml](.github/workflows/update-org-readme.yml)._"
           } > README.md
+          mkdir -p profile
+          cp README.md profile/README.md
 
       - name: Commit and push if changed
         run: |
           git config user.name  "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git diff --quiet README.md && echo "No changes, skipping commit." && exit 0
-          git add README.md
+          git diff --quiet README.md profile/README.md && echo "No changes, skipping commit." && exit 0
+          git add README.md profile/README.md
           git commit -m "chore: update org README [skip ci]"
           git push
