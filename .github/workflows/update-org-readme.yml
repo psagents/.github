@@ -34,7 +34,6 @@ jobs:
             --jq '[.[] | select(.name != ".github") | {
               name: .name,
               url: .html_url,
-              description: (.description // ""),
               pushed_at: .pushed_at
             }] | sort_by(.pushed_at) | reverse')
 
@@ -44,7 +43,23 @@ jobs:
             echo ""
             echo "| Repository | Description | Last updated |"
             echo "|------------|-------------|:------------:|"
-            echo "$REPOS" | jq -r '.[] | "| [\(.name)](\(.url)) | \(.description) | \(.pushed_at | split("T")[0]) |"'
+            while IFS= read -r repo; do
+              name=$(echo "$repo" | jq -r '.name')
+              url=$(echo "$repo"  | jq -r '.url')
+              date=$(echo "$repo" | jq -r '.pushed_at | split("T")[0]')
+
+              # Try to fetch description from SKILL.md frontmatter
+              skill_md=$(gh api "repos/${ORG}/${name}/contents/SKILL.md" \
+                -H "Accept: application/vnd.github.v3.raw" 2>/dev/null || true)
+              description=""
+              if [[ -n "$skill_md" ]]; then
+                description=$(echo "$skill_md" \
+                  | sed -n 's/^description:[[:space:]]*"\(.*\)"[[:space:]]*$/\1/p' \
+                  | head -1)
+              fi
+
+              echo "| [${name}](${url}) | ${description} | ${date} |"
+            done < <(echo "$REPOS" | jq -c '.[]')
             echo ""
             echo "_Updated automatically every hour by [update-org-readme.yml](.github/workflows/update-org-readme.yml)._"
           } > README.md
