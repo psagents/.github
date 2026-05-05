@@ -31,7 +31,7 @@ jobs:
           # Fetch all org repos, exclude .github itself, sort by pushed_at desc
           REPOS=$(gh api "orgs/${ORG}/repos?per_page=100&sort=pushed&direction=desc" \
             --paginate \
-            --jq '[.[] | select(.name != ".github") | {
+            --jq '[.[] | select([".github", "psagents.github.io"] | index(.name) | not) | {
               name: .name,
               url: .html_url,
               pushed_at: .pushed_at
