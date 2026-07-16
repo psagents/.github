@@ -22,7 +22,7 @@ jobs:
 
       - name: Generate README
         env:
-          GH_TOKEN: ${{ secrets.ORG_README_PAT }}
+          GH_TOKEN: ${{ secrets.ORG_README_PAT != '' && secrets.ORG_README_PAT || github.token }}
         run: |
           set -euo pipefail
 
