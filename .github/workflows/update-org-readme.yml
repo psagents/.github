@@ -16,7 +16,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@6ad62e90e1f2a00746495b5c7514e089945b72fd # v7.0.0
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
 
