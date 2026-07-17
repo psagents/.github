@@ -53,9 +53,52 @@ jobs:
                 -H "Accept: application/vnd.github.v3.raw" 2>/dev/null || true)
               description=""
               if [[ -n "$skill_md" ]]; then
-                description=$(echo "$skill_md" \
-                  | sed -n 's/^description:[[:space:]]*"\(.*\)"[[:space:]]*$/\1/p' \
-                  | head -1)
+                description=$(printf '%s\n' "$skill_md" | awk '
+                  BEGIN { in_frontmatter=0; in_description=0; desc_type=""; out=""; printed=0 }
+                  /^---[[:space:]]*$/ {
+                    if (!in_frontmatter) { in_frontmatter=1; next }
+                    if (in_description) {
+                      print out
+                      printed=1
+                    }
+                    exit
+                  }
+                  !in_frontmatter { next }
+                  in_description {
+                    if ($0 ~ /^[[:space:]]+/) {
+                      line=$0
+                      sub(/^[[:space:]]+/, "", line)
+                      if (desc_type == "literal") {
+                        out = out (out=="" ? "" : "\n") line
+                      } else {
+                        out = out (out=="" ? "" : " ") line
+                      }
+                      next
+                    }
+                    print out
+                    printed=1
+                    exit
+                  }
+                  /^description:[[:space:]]*/ {
+                    value=$0
+                    sub(/^description:[[:space:]]*/, "", value)
+                    gsub(/[[:space:]]+$/, "", value)
+                    if (value ~ /^>/) { in_description=1; desc_type="folded"; next }
+                    if (value ~ /^\|/) { in_description=1; desc_type="literal"; next }
+                    if (value ~ /^".*"$/) {
+                      sub(/^"/, "", value)
+                      sub(/"$/, "", value)
+                    }
+                    print value
+                    printed=1
+                    exit
+                  }
+                  END {
+                    if (in_description && !printed) {
+                      print out
+                    }
+                  }
+                ' | head -1)
               fi
 
               echo "| [${name}](${url}) | ${description} | ${date} |"
