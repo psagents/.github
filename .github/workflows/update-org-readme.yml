@@ -53,9 +53,56 @@ jobs:
                 -H "Accept: application/vnd.github.v3.raw" 2>/dev/null || true)
               description=""
               if [[ -n "$skill_md" ]]; then
-                description=$(echo "$skill_md" \
-                  | sed -n 's/^description:[[:space:]]*"\(.*\)"[[:space:]]*$/\1/p' \
-                  | head -1)
+                description=$(printf '%s\n' "$skill_md" | awk '
+                  BEGIN { in_frontmatter=0; in_description=0; line_separator=" "; out=""; printed=0; desc_indent=-1 }
+                  /^---[[:space:]]*$/ {
+                    if (!in_frontmatter) { in_frontmatter=1; next }
+                    if (in_description) {
+                      print out
+                      printed=1
+                    }
+                    exit
+                  }
+                  !in_frontmatter { next }
+                  in_description {
+                    if ($0 ~ /^[[:space:]]+/) {
+                      raw=$0
+                      match(raw, /^[[:space:]]*/)
+                      lead=RLENGTH
+                      if (desc_indent < 0) {
+                        desc_indent=lead
+                      }
+                      strip=(lead < desc_indent ? lead : desc_indent)
+                      line=substr(raw, strip + 1)
+                      out = out (out=="" ? "" : line_separator) line
+                      next
+                    }
+                    print out
+                    printed=1
+                    exit
+                  }
+                  /^description:[[:space:]]*/ {
+                    value=$0
+                    sub(/^description:[[:space:]]*/, "", value)
+                    gsub(/^[[:space:]]+/, "", value)
+                    gsub(/[[:space:]]+$/, "", value)
+                    # [+-]?[0-9]* handles YAML block scalar chomping (+/-) and indentation indicators (e.g., >-, |+, >2).
+                    if (value ~ /^>[+-]?[0-9]*$/) { in_description=1; line_separator=" "; next }
+                    if (value ~ /^\|[+-]?[0-9]*$/) { in_description=1; line_separator="<br>"; next }
+                    if (value ~ /^".*"$/) {
+                      sub(/^"/, "", value)
+                      sub(/"$/, "", value)
+                    }
+                    print value
+                    printed=1
+                    exit
+                  }
+                  END {
+                    if (in_description && !printed) {
+                      print out
+                    }
+                  }
+                ')
               fi
 
               echo "| [${name}](${url}) | ${description} | ${date} |"
