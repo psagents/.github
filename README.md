@@ -3,7 +3,7 @@
 | Repository | Description | Last updated |
 |------------|-------------|:------------:|
 | [hutch-copilot](https://github.com/psagents/hutch-copilot) |  | 2026-07-16 |
-| [ask-lute](https://github.com/psagents/ask-lute) | Assistant for lute-related questions (LCLS Unified Task Executor) — task creation, YAML configuration, workflows, executors, IPC, SLURM submission. | 2026-07-15 |
+| [ask-lute](https://github.com/psagents/ask-lute) |  | 2026-07-16 |
 | [ask-happi](https://github.com/psagents/ask-happi) | Query the PCDS happi device database for LCLS beamline components. Use when asked about device names, PV prefixes, z-positions, beamline maps, mirrors, YAGs, slits, attenuators, or any hardware device registered in the PCDS happi database. | 2026-07-10 |
 | [beamtime-logger](https://github.com/psagents/beamtime-logger) | Real-time beamtime note-taking assistant for LCLS experiments. Use when logging beam delivery, alignment steps, faults, or tooling work during MFX (or other hutch) shifts. Maintains beam_notes.md with consistent formatting, timestamps, and section structure. | 2026-07-10 |
 | [cds-bridge](https://github.com/psagents/cds-bridge) | Access LCLS /cds filesystem from S3DF. Use when reading hutch-python configs, happi DB, IOC files, presets, or any file that lives on the CDS/PCDS filesystem and is not mounted on S3DF. Also covers when EPICS CA access requires a controls machine. | 2026-07-01 |
