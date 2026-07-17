@@ -54,7 +54,7 @@ jobs:
               description=""
               if [[ -n "$skill_md" ]]; then
                 description=$(printf '%s\n' "$skill_md" | awk '
-                  BEGIN { in_frontmatter=0; in_description=0; desc_type=""; out=""; printed=0 }
+                  BEGIN { in_frontmatter=0; in_description=0; line_separator=" "; out=""; printed=0; desc_indent=-1 }
                   /^---[[:space:]]*$/ {
                     if (!in_frontmatter) { in_frontmatter=1; next }
                     if (in_description) {
@@ -66,13 +66,15 @@ jobs:
                   !in_frontmatter { next }
                   in_description {
                     if ($0 ~ /^[[:space:]]+/) {
-                      line=$0
-                      sub(/^[[:space:]]+/, "", line)
-                      if (desc_type == "literal") {
-                        out = out (out=="" ? "" : "\n") line
-                      } else {
-                        out = out (out=="" ? "" : " ") line
+                      raw=$0
+                      match(raw, /^[[:space:]]*/)
+                      lead=RLENGTH
+                      if (desc_indent < 0) {
+                        desc_indent=lead
                       }
+                      strip=(lead < desc_indent ? lead : desc_indent)
+                      line=substr(raw, strip + 1)
+                      out = out (out=="" ? "" : line_separator) line
                       next
                     }
                     print out
@@ -82,9 +84,11 @@ jobs:
                   /^description:[[:space:]]*/ {
                     value=$0
                     sub(/^description:[[:space:]]*/, "", value)
+                    gsub(/^[[:space:]]+/, "", value)
                     gsub(/[[:space:]]+$/, "", value)
-                    if (value ~ /^>/) { in_description=1; desc_type="folded"; next }
-                    if (value ~ /^\|/) { in_description=1; desc_type="literal"; next }
+                    # [+-]?[0-9]* handles YAML block scalar chomping (+/-) and indentation indicators (e.g., >-, |+, >2).
+                    if (value ~ /^>[+-]?[0-9]*$/) { in_description=1; line_separator=" "; next }
+                    if (value ~ /^\|[+-]?[0-9]*$/) { in_description=1; line_separator="<br>"; next }
                     if (value ~ /^".*"$/) {
                       sub(/^"/, "", value)
                       sub(/"$/, "", value)
@@ -98,7 +102,7 @@ jobs:
                       print out
                     }
                   }
-                ' | head -1)
+                ')
               fi
 
               echo "| [${name}](${url}) | ${description} | ${date} |"
