@@ -2,7 +2,7 @@
 
 | Repository | Description | Last updated |
 |------------|-------------|:------------:|
-| [launch-sfx-dashboard](https://github.com/psagents/launch-sfx-dashboard) | Launch the SFX analysis dashboard. Dashboard monitors hit rate, indexing, unit cell distributions, and merge statistics. | 2026-09-10 |
+| [launch-sfx-dashboard](https://github.com/psagents/launch-sfx-dashboard) | Launch the SFX analysis dashboard. Resolves the experiment, lists available versions, runs ~/sfx-dashboard/launch.sh with the right args, and prints the SSH tunnel command. Pass an experiment ID as argument (e.g. /launch-sfx-dashboard mfx101624926), or it will use $EXPERIMENT/$EXPNAME from the environment. | 2026-09-10 |
 | [cctbx-sfx-workflow](https://github.com/psagents/cctbx-sfx-workflow) |  | 2026-09-10 |
 | [setup-cctbx-pipeline](https://github.com/psagents/setup-cctbx-pipeline) |  | 2026-09-10 |
 | [hutch-copilot](https://github.com/psagents/hutch-copilot) | LCLS beamline copilot agent. Use for any experiment operation at an LCLS-I or LCLS-II hutch: starting/monitoring data runs, beam readiness checks, beam alignment optimization,  setup analysis workflows and refine then if needed, and coordinate experiment state with  the operator. This skill is the main entry point for all hutch operations and delegates  to sub-skills for specialized tasks. | 2026-09-10 |
