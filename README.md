@@ -2,7 +2,7 @@
 
 | Repository | Description | Last updated |
 |------------|-------------|:------------:|
-| [.discussion](https://github.com/psagents/.discussion) |  | 2026-09-17 |
+| [.discussion](https://github.com/psagents/.discussion) |  | 2026-09-18 |
 | [launch-sfx-dashboard](https://github.com/psagents/launch-sfx-dashboard) | Launch the SFX analysis dashboard. Dashboard monitors hit rates, indexing, unit cell distributions, and merge statistics. | 2026-09-10 |
 | [cctbx-sfx-workflow](https://github.com/psagents/cctbx-sfx-workflow) | Iterative CCTBX SFX analysis skill for LCLS — monitors eLog tags for new runs, drives the index/scale/merge pipeline, versions merge outputs, and recommends d_min adjustments. | 2026-09-10 |
 | [setup-cctbx-pipeline](https://github.com/psagents/setup-cctbx-pipeline) | Generate a validated, ready-to-run CCTBX SFX pipeline configuration (YAML, DAGs, submit script) for an LCLS experiment using LUTE. One-time setup step before running the cctbx-sfx-workflow skill. | 2026-09-10 |
