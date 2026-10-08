@@ -2,7 +2,7 @@
 
 | Repository | Description | Last updated |
 |------------|-------------|:------------:|
-| [hutch-copilot](https://github.com/psagents/hutch-copilot) | LCLS beamline copilot agent. Use for any experiment operation at an LCLS-I or LCLS-II hutch: starting/monitoring data runs, beam readiness checks, beam alignment optimization,  setup analysis workflows and refine then if needed, and coordinate experiment state with  the operator. This skill is the main entry point for all hutch operations and delegates  to sub-skills for specialized tasks. | 2026-10-01 |
+| [hutch-copilot](https://github.com/psagents/hutch-copilot) | LCLS beamline copilot agent. Use for any experiment operation at an LCLS-I or LCLS-II hutch: starting/monitoring data runs, beam readiness checks, beam alignment optimization,  setup analysis workflows and refine then if needed, and coordinate experiment state with  the operator. This skill is the main entry point for all hutch operations and delegates  to sub-skills for specialized tasks. | 2026-10-07 |
 | [.discussion](https://github.com/psagents/.discussion) |  | 2026-09-18 |
 | [launch-sfx-dashboard](https://github.com/psagents/launch-sfx-dashboard) | Launch the SFX analysis dashboard. Dashboard monitors hit rates, indexing, unit cell distributions, and merge statistics. | 2026-09-10 |
 | [cctbx-sfx-workflow](https://github.com/psagents/cctbx-sfx-workflow) | Iterative CCTBX SFX analysis skill for LCLS — monitors eLog tags for new runs, drives the index/scale/merge pipeline, versions merge outputs, and recommends d_min adjustments. | 2026-09-10 |
